@@ -16,7 +16,7 @@ class Wilaya(models.Model):
     
 class Commune(models.Model):
     commune=models.CharField(max_length=100)
-    city=models.ForeignKey(Wilaya,on_delete=models.PROTECT)
+    wilaya=models.ForeignKey(Wilaya,on_delete=models.PROTECT)
     
     
 
@@ -25,7 +25,7 @@ class Address(models.Model):
     commune=models.ForeignKey(Commune,on_delete=models.PROTECT)
 
 
-class User(models.Model):
+class Utilisateur(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=10)
     address=models.ForeignKey(Address,on_delete=models.PROTECT)
@@ -37,57 +37,36 @@ class User(models.Model):
 	# 	return self.user
 
 class Theme(models.Model):
-    MATH = '0'
-    PHYSIC ='1'
-    BIO='2'
-    TM=[
-        (MATH,'mathematique'),
-        (PHYSIC,'physique'),  
-        (BIO,'science'),
-     ]
-    theme=models.CharField(
-        max_length = 1 , choices = TM 
-    )
+    theme=models.CharField(max_length= 255)
+
 class Categorie(models.Model):
-    PRE = '0'
-    MID ='1'
-    HIGH='2'
-    CAT=[
-        (PRE,'Primaire'),
-        (MID,'Cem'),  
-        (HIGH,'Lycee'),
-     ]
-    categorie=models.CharField( max_length = 1 , choices = CAT)
+    categorie=models.CharField(max_length= 255)
 
 
 class Annonce(models.Model):
-    OFFLINE = '0'
-    ONLINE ='1'
-    STATE=[
-        (OFFLINE,'hors ligne'),
-        (ONLINE,'en ligne'),     
-    ]
+    
     
     title = models.CharField(max_length= 255)
     description = models.CharField(max_length= 1000)
-    modalite=models.CharField(
-        max_length = 1 , choices= STATE , default=ONLINE
-    )
+    modalite=models.CharField(max_length= 255)
     tarif = models.CharField(max_length=255)
-    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    user=models.ForeignKey(Utilisateur,on_delete=models.CASCADE)
     address=models.ForeignKey(Address,on_delete=models.PROTECT)
     theme=models.ForeignKey(Theme,on_delete=models.PROTECT)
     categorie=models.ForeignKey(Categorie,on_delete=models.PROTECT)
+    date=models.DateField()
     
 
 class Offre(models.Model):
     comment=models.CharField(max_length=700)
-    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    user=models.ForeignKey(Utilisateur,on_delete=models.CASCADE)
     annonce=models.ForeignKey(Annonce,on_delete=models.CASCADE)
 class  Favori(models.Model):
-    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    user=models.ForeignKey(Utilisateur,on_delete=models.CASCADE)
     annonce=models.ForeignKey(Annonce,on_delete=models.CASCADE) 
 
-class tof(models.Model):
-    image = CloudinaryField('image')
-    announce=models.ForeignKey(Annonce, on_delete=models.CASCADE)   
+
+
+class Image(models.Model):
+    announce=models.ForeignKey(Annonce, on_delete=models.CASCADE) 
+    image = models.ImageField('image')
